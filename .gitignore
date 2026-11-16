@@ -1,0 +1,10 @@
+# Local Claude Code permissions (per computer)
+.claude/**/settings.local.json
+
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Supabase URL and publishable key; set the same values in Netlify's environment variables
+.env
+.env.local
