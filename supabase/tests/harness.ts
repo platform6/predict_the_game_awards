@@ -10,6 +10,7 @@ const migrationsDir = join(import.meta.dirname, '..', 'migrations');
 const supabaseStub = `
   create role anon nologin;
   create role authenticated nologin;
+  create role supabase_auth_admin nologin;
   grant usage on schema public to anon, authenticated;
   alter default privileges in schema public grant all on tables to anon, authenticated;
   alter default privileges in schema public grant all on sequences to anon, authenticated;

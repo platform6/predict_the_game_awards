@@ -206,3 +206,29 @@ describe('leaderboard', () => {
     ]);
   });
 });
+
+describe('sign-up hook', () => {
+  const event = (provider: string) =>
+    JSON.stringify({ user: { email: 'new@example.com', app_metadata: { provider, providers: [provider] } } });
+
+  it('allows accounts created with Google', async () => {
+    const res = await db.query<{ r: unknown }>('select public.hook_google_only_signups($1::jsonb) as r', [event('google')]);
+    expect(res.rows[0].r).toEqual({});
+  });
+
+  it('rejects email/password and other providers', async () => {
+    for (const provider of ['email', 'discord']) {
+      const res = await db.query<{ r: { error: { http_code: number } } }>(
+        'select public.hook_google_only_signups($1::jsonb) as r',
+        [event(provider)],
+      );
+      expect(res.rows[0].r.error.http_code).toBe(403);
+    }
+  });
+
+  it('cannot be called by signed-in users', async () => {
+    await expect(
+      as(db, alice, (tx) => tx.query('select public.hook_google_only_signups($1::jsonb)', [event('google')])),
+    ).rejects.toThrow(/permission denied/);
+  });
+});
