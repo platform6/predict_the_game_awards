@@ -17,6 +17,16 @@ moved to a project of their own later. Never touch lula's own tables. `.env` (un
 `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`, the same public values as lula's `.env`;
 see `.env.example`. Netlify needs the same two variables.
 
+Schema changes are SQL files in `supabase/migrations/`; the comment at the top of the first one
+explains the tables and who can see or change what (RLS). `supabase/tests/` runs every migration in
+PGlite (Postgres in Node) with a small stand-in for Supabase's auth and roles, and tests the policies;
+it's part of `npm run check`. Keep `src/lib/types.ts` in step with the tables. Applying a migration
+changes the live database lula also uses, so only do it when the owner says to.
+
+Past years (2024, 2025) are in `data/history/`, cleaned up from the owner's Google Form sheets.
+`npm run -s history-sql` prints the SQL that imports them. The repo is public, so friends' emails stay
+in the untracked `data/history/emails.local.json`, never in committed files.
+
 ## Checks
 
 `npm run check` typechecks and then runs the tests (Vitest), and exits non-zero if either fails. Run it

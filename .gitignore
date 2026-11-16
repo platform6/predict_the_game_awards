@@ -8,3 +8,6 @@ dist/
 # Supabase URL and publishable key; set the same values in Netlify's environment variables
 .env
 .env.local
+
+# Past players' emails for linking their accounts (the repo is public)
+data/history/emails.local.json
